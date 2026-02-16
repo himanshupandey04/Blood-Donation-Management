@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Success Stories{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 px-lg-5 py-5">
+    <h1 class="text-center mb-5">Success Stories</h1>
+
+
+    <section class="mb-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+            <h2 class="mb-3 mb-md-0">Real-Life Experiences</h2>
+            <button class="btn btn-danger">Share Your Story</button>
+        </div>
+
+        <div class="row">
+            {% for story in stories %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="story-image-container">
+                        <!-- REPLACE THIS WITH ACTUAL STORY IMAGE -->
+                        <div class="story-image-placeholder">Story Image</div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ story.title }}</h5>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>{{ story.author }}</span>
+                            <span class="badge bg-danger-subtle text-danger">{{ story.type }}</span>
+                        </div>
+                        <p class="card-text">{{ story.content }}</p>
+                        <a href="#" class="text-danger">Read full story</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+
+    <section>
+        <h2 class="mb-4">Photo Gallery</h2>
+        <div class="row g-3">
+            {% for i in range(1, 9) %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <img src="{{ url_for('static', filename='images/story' + i|string + '.jpg') }}"
+                    alt="Gallery Image {{ i }}" class="img-fluid gallery-image">
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

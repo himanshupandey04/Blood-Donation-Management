@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+
+{% block title %}Donate Blood - Save a Life{% endblock %}
+
+{% block content %}
+
+<!-- Hero Search Section -->
+<section class="bg-primary text-white py-5 mb-5" style="background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);">
+    <div class="container-fluid px-4 px-lg-5 text-center">
+        <h1 class="display-4 fw-bold mb-3">Find Blood Near You</h1>
+        <p class="lead mb-4 opacity-75">Connect with donors and blood banks instantly.</p>
+
+        <div class="card p-3 p-lg-4 border-0 shadow-lg mx-auto" style="max-width: 1000px; border-radius: 1rem;">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-3">
+                    <div class="form-floating text-dark">
+                        <select class="form-select border-0 bg-light fw-bold" id="searchCity">
+                            <option selected>All Cities</option>
+                            <option value="Vizag">Vizag</option>
+                            <option value="Hyderabad">Hyderabad</option>
+                            <option value="Vijayawada">Vijayawada</option>
+                        </select>
+                        <label for="searchCity">City</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating text-dark">
+                        <select class="form-select border-0 bg-light fw-bold" id="searchBlood">
+                            <option selected value="">Any Type</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                        <label for="searchBlood">Blood Group</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating text-dark">
+                        <input type="text" class="form-control border-0 bg-light fw-bold" id="searchHospital"
+                            placeholder="Hospital Name">
+                        <label for="searchHospital">Hospital (Optional)</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button id="searchBtn" class="btn btn-danger w-100 h-100 py-3 fw-bold shadow-sm"
+                        style="min-height: 58px;">SEARCH</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container-fluid px-4 px-lg-5 pb-5">
+
+    <!-- Search Results Section -->
+    <div class="row mb-5 d-none" id="searchResultsSection">
+        <div class="col-12 text-center mb-4">
+            <span class="badge bg-light text-dark px-3 py-2 border rounded-pill">Blood Banks Found</span>
+        </div>
+        <div class="row" id="resultsContainer">
+            <!-- Dynamic Results will appear here -->
+            {% for i in range(1, 4) %}
+            <div class="col-md-6 col-lg-4 mb-4 result-item">
+                <div class="card h-100 border-0 shadow-sm hover-elevate">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 50px; height: 50px;">
+                                <i class="fas fa-clinic-medical fa-lg"></i>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success">Open Now</span>
+                        </div>
+                        <h5 class="card-title fw-bold">City Blood Bank {{ i }}</h5>
+                        <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt me-2"></i>Beach Road, Vizag</p>
+                        <p class="text-muted small mb-2"><i class="fas fa-tint me-2 text-danger"></i>A+, B+, O+</p>
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-outline-danger btn-sm rounded-pill">Get Directions</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Main Forms Section -->
+    <div class="row g-5">
+
+        <!-- Register Donor Form -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow h-100">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                            style="width: 40px; height: 40px;">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3 class="card-title fw-bold mb-0">Become a Donor</h3>
+                    </div>
+                    <p class="text-muted ps-5 ms-2 mb-0">Join our community of life-savers today.</p>
+                </div>
+                <div class="card-body p-4 pt-4">
+                    <form action="/donate" method="post">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="John Doe"
+                                        required>
+                                    <label for="name">Full Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" id="age" name="age" placeholder="25"
+                                        min="17" max="65" required>
+                                    <label for="age">Age (17-65)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="bloodGroup" name="bloodGroup" required>
+                                        <option selected disabled value="">Choose...</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                    <label for="bloodGroup">Blood Group</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone"
+                                        required>
+                                    <label for="phone">Phone Number</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="name@example.com" required>
+                            <label for="email">Email Address</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" placeholder="Address" id="address" name="address"
+                                style="height: 80px" required></textarea>
+                            <label for="address">Residential Address</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="medicalConditions" name="medicalConditions"
+                                placeholder="None">
+                            <label for="medicalConditions">Medical Conditions (Optional)</label>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" id="lastDonation" name="lastDonation">
+                                    <label for="lastDonation">Last Donation (Optional)</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check pt-3">
+                                    <input type="checkbox" class="form-check-input" id="available" name="available"
+                                        checked>
+                                    <label class="form-check-label small" for="available">Available for emergency
+                                        calls?</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                            <label class="form-check-label small text-muted" for="terms">I confirm the information is
+                                accurate and I consent to be contacted.</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger w-100 py-3 rounded-pill fw-bold shadow-sm">REGISTER
+                            NOW</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Blood Form -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow h-100 request-card">
+                <!-- Add request-card class if needed for specific styling -->
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                            style="width: 40px; height: 40px;">
+                            <i class="fas fa-hand-holding-medical"></i>
+                        </div>
+                        <h3 class="card-title fw-bold mb-0">Request Blood</h3>
+                    </div>
+                    <p class="text-muted ps-5 ms-2 mb-0">Submit a request for patients in need.</p>
+                </div>
+
+                <div class="card-body p-4 pt-4">
+                    <form action="/submit_request" method="post">
+
+                        <div class="form-check form-switch mb-3 bg-danger bg-opacity-10 p-3 rounded">
+                            <input class="form-check-input ms-0 me-3" type="checkbox" id="isEmergency"
+                                name="isEmergency" style="transform: scale(1.3);">
+                            <label class="form-check-label fw-bold text-danger pt-1" for="isEmergency">Is this a Medical
+                                Emergency?</label>
+                        </div>
+
+                        <div id="emergencyAlert" class="alert alert-danger d-none border-0 shadow-sm mb-4">
+                            <div class="d-flex">
+                                <i class="fas fa-ambulance fa-2x me-3"></i>
+                                <div>
+                                    <strong class="d-block">We are prioritizing this!</strong>
+                                    <span class="small">Our coordination team will be notified immediately.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="patientName" name="patientName"
+                                        placeholder="Name" required>
+                                    <label for="patientName">Patient Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" id="patientAge" name="patientAge"
+                                        placeholder="Age" required>
+                                    <label for="patientAge">Age</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="bloodGroupNeeded" name="bloodGroupNeeded" required>
+                                        <option selected disabled value="">Required Type</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                    <label for="bloodGroupNeeded">Blood Group</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="units" name="unitsRequired" required>
+                                        <option value="1">1 Unit</option>
+                                        <option value="2">2 Units</option>
+                                        <option value="3">3 Units</option>
+                                        <option value="4">4 Units</option>
+                                        <option value="5+">5+ Units</option>
+                                    </select>
+                                    <label for="units">Units Needed</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="hospital" name="hospital" placeholder="Hospital"
+                                required>
+                            <label for="hospital">Hospital Name & City</label>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="contactName" name="contactName"
+                                        placeholder="Contact" required>
+                                    <label for="contactName">Contact Person</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="tel" class="form-control" id="contactPhone" name="contactPhone"
+                                        placeholder="Phone" required>
+                                    <label for="contactPhone">Contact Phone</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="contactEmail" name="contactEmail"
+                                placeholder="name@example.com" required>
+                            <label for="contactEmail">Email Address</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" placeholder="Reason" id="reason" name="reason"
+                                style="height: 80px" required></textarea>
+                            <label for="reason">Reason for Request</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <select class="form-select" id="urgency" name="urgency" required>
+                                <option value="low">Standard (Within a week)</option>
+                                <option value="medium">Urgent (Within 48 hours)</option>
+                                <option value="high">Critical (Immediate)</option>
+                            </select>
+                            <label for="urgency">Urgency Level</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100 py-3 rounded-pill fw-bold shadow-sm">SUBMIT
+                            REQUEST</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Toggle Emergency Alert
+        const emergencyCheckbox = document.getElementById('isEmergency');
+        const emergencyAlert = document.getElementById('emergencyAlert');
+
+        emergencyCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                emergencyAlert.classList.remove('d-none');
+            } else {
+                emergencyAlert.classList.add('d-none');
+            }
+        });
+
+        // Simulation of Search Functionality
+        const searchBtn = document.getElementById('searchBtn');
+        const searchResultsSection = document.getElementById('searchResultsSection');
+
+        searchBtn.addEventListener('click', function () {
+            // In a real app, this would fetch data based on inputs
+            // For now, we simulate a loading delay then show results
+            searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+            searchBtn.disabled = true;
+
+            setTimeout(function () {
+                searchResultsSection.classList.remove('d-none');
+                searchBtn.innerHTML = 'SEARCH';
+                searchBtn.disabled = false;
+                // Smooth scroll to results
+                searchResultsSection.scrollIntoView({ behavior: 'smooth' });
+            }, 800);
+        });
+    });
+</script>
+{% endblock %}

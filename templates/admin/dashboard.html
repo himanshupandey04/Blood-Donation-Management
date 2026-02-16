@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 px-lg-5 py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin Dashboard</h1>
+        <span class="badge bg-danger">Administrator Mode</span>
+    </div>
+
+    <ul class="nav nav-tabs mb-4" id="adminTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="donations-tab" data-bs-toggle="tab" data-bs-target="#donations"
+                type="button">Donations</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests"
+                type="button">Patient Requests</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="camps-tab" data-bs-toggle="tab" data-bs-target="#camps" type="button">Manage
+                Camps</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="testimonials-tab" data-bs-toggle="tab" data-bs-target="#testimonials"
+                type="button">Testimonials</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="adminTabContent">
+
+        <!-- Donations Tab -->
+        <div class="tab-pane fade show active" id="donations" role="tabpanel">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Recent Donations</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Name</th>
+                                    <th>Blood Group</th>
+                                    <th>Contact</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for donor in donations %}
+                                <tr>
+                                    <td>{{ donor.submitted_at.strftime('%Y-%m-%d') if donor.submitted_at else 'N/A' }}
+                                    </td>
+                                    <td class="fw-bold">{{ donor.donor_name }}</td>
+                                    <td><span class="badge bg-danger">{{ donor.donor_blood_group }}</span></td>
+                                    <td>{{ donor.donor_phone }}</td>
+                                    <td>
+                                        {% if donor.available %}
+                                        <span class="badge bg-success">Available</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Unavailable</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">No donations yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests Tab -->
+        <div class="tab-pane fade" id="requests" role="tabpanel">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Patient Requests</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Urgency</th>
+                                    <th>Patient</th>
+                                    <th>Required</th>
+                                    <th>Hospital</th>
+                                    <th>Contact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for req in requests %}
+                                <tr>
+                                    <td>
+                                        {% if req.urgency == 'high' %}
+                                        <span class="badge bg-danger">CRITICAL</span>
+                                        {% elif req.urgency == 'medium' %}
+                                        <span class="badge bg-warning text-dark">URGENT</span>
+                                        {% else %}
+                                        <span class="badge bg-info text-dark">NORMAL</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fw-bold">{{ req.patient_name }} ({{ req.patient_age }})</td>
+                                    <td><span class="badge bg-danger">{{ req.blood_group_needed }}</span> ({{
+                                        req.units_required }} units)</td>
+                                    <td>{{ req.hospital }}</td>
+                                    <td>
+                                        <div>{{ req.contact_name }}</div>
+                                        <small class="text-muted">{{ req.contact_phone }}</small>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">No requests found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Camps Tab -->
+        <div class="tab-pane fade" id="camps" role="tabpanel">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0">Add New Camp</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('admin.add_camp') }}" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Camp Title</label>
+                                    <input type="text" class="form-control" name="title" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Date</label>
+                                    <input type="text" class="form-control" name="date"
+                                        placeholder="e.g. April 15, 2023" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Time</label>
+                                    <input type="text" class="form-control" name="time"
+                                        placeholder="e.g. 9:00 AM - 2:00 PM" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-control" name="location" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Available Slots</label>
+                                    <input type="number" class="form-control" name="slots" value="50" required>
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100">Add Camp</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Existing Camps</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                {% for camp in camps %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="fw-bold mb-0">{{ camp.title }}</h6>
+                                        <small class="text-muted">{{ camp.date }} | {{ camp.location }}</small>
+                                    </div>
+                                    <a href="{{ url_for('admin.delete_camp', camp_id=camp._id) }}"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete this camp?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="list-group-item text-center text-muted">No camps listed.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Testimonials Tab -->
+        <div class="tab-pane fade" id="testimonials" role="tabpanel">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">Add Testimonial</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('admin.add_testimonial') }}" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Role</label>
+                                    <input type="text" class="form-control" name="role" placeholder="e.g. Regular Donor"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Quote</label>
+                                    <textarea class="form-control" name="quote" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-dark w-100">Add Testimonial</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Live Testimonials</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                {% for t in testimonials %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <p class="fst-italic mb-1">"{{ t.quote }}"</p>
+                                            <small class="fw-bold text-danger">- {{ t.name }}, {{ t.role }}</small>
+                                        </div>
+                                        <a href="{{ url_for('admin.delete_testimonial', t_id=t._id) }}"
+                                            class="text-danger ms-3"
+                                            onclick="return confirm('Remove this testimonial?')">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                {% else %}
+                                <li class="list-group-item text-center text-muted">No testimonials yet.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

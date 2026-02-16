@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        // Apply dark mode immediately to prevent flash
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode'); // Failsafe
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blood Donation{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <div class="container-fluid px-4 px-lg-5">
+            <a class="navbar-brand" href="/">
+                <span class="blood-icon"></span>
+                <span class="brand-name">BloodLife</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/donate">Donate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/stories">Stories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/faq">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contact</a>
+                    </li>
+                </ul>
+                <div class="ms-auto d-flex align-items-center">
+                    <div class="form-check form-switch me-3">
+                        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                        <label class="form-check-label" for="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </label>
+                    </div>
+
+                    {% if user_name %}
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle"
+                            id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle fa-2x text-secondary me-2"></i>
+                            <span class="fw-bold">{{ user_name }}</span>
+                            {% if session.get('is_admin') %}
+                            <span class="badge bg-danger ms-2" style="font-size: 0.7em;">ADMIN</span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="/profile"><i class="fas fa-id-card me-2 text-danger"></i>
+                                    My Profile</a></li>
+                            {% if session.get('is_admin') %}
+                            <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i
+                                        class="fas fa-cog me-2 text-danger"></i> Admin Dashboard</a></li>
+                            {% endif %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
+                                        class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="/auth" class="btn btn-outline-danger">Login / Signup</a>
+                    {% endif %}
+                </div>
+
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container-fluid px-4 px-lg-5 mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-5 mt-5">
+        <div class="container-fluid px-4 px-lg-5">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5 class="mb-3">BloodLife</h5>
+                    <p class="text-muted">Connecting donors with those in need. Every donation saves lives.</p>
+                    <div class="social-icons">
+                        <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/donate">Donate</a></li>
+                        <li><a href="/stories">Stories</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="mb-3">Contact Us</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li>Beach Street</li>
+                        <li>Vizag, AP 001010</li>
+                        <li>Phone: 000010001001</li>
+                        <li>Email: info@bloodlife.org</li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5 class="mb-3">Blood Donation Centers</h5>
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.5738757353265!2d77.53346577454607!3d12.935086915678825!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae3e468d8d36d3%3A0x694d74f6ac640acf!2sPES%20University!5e0!3m2!1sen!2sin!4v1743060008800!5m2!1sen!2sin"
+                        width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        <div class="border-top pt-4 mt-4 text-center text-muted">
+            <p>&copy; {{ current_year }} BloodLife. All rights reserved.</p>
+            <p>
+                <a href="#" class="text-muted">Privacy Policy</a> |
+                <a href="#" class="text-muted">Terms of Service</a>
+            </p>
+        </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <button id="chatbot-toggle" class="btn btn-danger rounded-circle shadow p-3">
+            <i class="fas fa-comment-dots fa-2x"></i>
+        </button>
+        <div id="chatbot-box" class="card shadow" style="width: 300px; display: none; margin-bottom: 10px;">
+            <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">BloodLife Bot</h5>
+                <button type="button" class="btn-close btn-close-white" id="chatbot-close"></button>
+            </div>
+            <div class="card-body" id="chatbot-messages" style="height: 250px; overflow-y: auto;">
+                <div class="text-start mb-2"><span class="badge bg-light text-dark p-2">Hi! Ask me about donating
+                        blood.</span></div>
+            </div>
+            <div class="card-footer p-2">
+                <div class="input-group">
+                    <input type="text" id="chatbot-input" class="form-control form-control-sm"
+                        placeholder="Type a message...">
+                    <button class="btn btn-danger btn-sm" id="chatbot-send"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        // Chatbot Logic
+        document.getElementById('chatbot-toggle').addEventListener('click', function () {
+            var box = document.getElementById('chatbot-box');
+            box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('chatbot-close').addEventListener('click', function () {
+            document.getElementById('chatbot-box').style.display = 'none';
+        });
+
+        function sendMessage() {
+            var input = document.getElementById('chatbot-input');
+            var message = input.value;
+            if (message.trim() === '') return;
+
+            var msgDiv = document.getElementById('chatbot-messages');
+            msgDiv.innerHTML += '<div class="text-end mb-2"><span class="badge bg-danger p-2">' + message + '</span></div>';
+            input.value = '';
+            msgDiv.scrollTop = msgDiv.scrollHeight;
+
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    msgDiv.innerHTML += '<div class="text-start mb-2"><span class="badge bg-light text-dark p-2">' + data.response + '</span></div>';
+                    msgDiv.scrollTop = msgDiv.scrollHeight;
+                });
+        }
+
+        document.getElementById('chatbot-send').addEventListener('click', sendMessage);
+        document.getElementById('chatbot-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

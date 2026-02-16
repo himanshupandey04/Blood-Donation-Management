@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to BloodLife{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Override Base Styles for Auth Page */
+    body {
+        background: url("{{ url_for('static', filename='images/login_bg.png') }}") no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        display: flex;
+        align-items: center; /* Center Vertically if main is full height */
+        flex-direction: column;
+    }
+    
+    /* Hide standard navbar on auth page for landing page feel */
+    nav.navbar {
+        display: none !important;
+    }
+    
+    footer {
+        display: none !important;
+    }
+
+    main {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        backdrop-filter: blur(5px); /* Subtle blur on background */
+        background-color: rgba(0, 0, 0, 0.3); /* Dark overlay */
+    }
+
+    .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        overflow: hidden; /* For side-by-side layout */
+        width: 900px;
+        max-width: 95%;
+        display: flex;
+        min-height: 600px;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .auth-sidebar {
+        background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+        width: 45%;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: white;
+        text-align: center;
+        position: relative;
+    }
+
+    .auth-sidebar h2 {
+        font-weight: 700;
+        margin-bottom: 20px;
+        font-size: 2.5rem;
+    }
+
+    .auth-sidebar p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+
+    .auth-content {
+        width: 55%;
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .brand-logo {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #c1121f;
+        margin-bottom: 10px;
+        display: block;
+        text-align: center;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        margin-bottom: 15px;
+        background-color: #f8f9fa;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+        border-color: #e63946;
+    }
+
+    .btn-primary {
+        background-color: #e63946;
+        border-color: #e63946;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #c1121f;
+        border-color: #c1121f;
+        transform: translateY(-2px);
+    }
+
+    .nav-pills .nav-link {
+        color: #555;
+        font-weight: 600;
+        border-radius: 30px;
+        padding: 10px 25px;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: #e63946;
+        color: white;
+    }
+
+    .toggle-forms {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="auth-card">
+        <!-- Left Sidebar (Visual) -->
+        <div class="auth-sidebar">
+            <div class="floating-shape" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
+            <div class="floating-shape" style="width: 200px; height: 200px; bottom: -50px; right: -50px;"></div>
+            
+            <h2>Save a Life</h2>
+            <p>Your donation can be the reason someone smiles today. Join our community of heroes.</p>
+            <div class="mt-4">
+                <i class="fas fa-heartbeat fa-5x" style="opacity: 0.8;"></i>
+            </div>
+        </div>
+
+        <!-- Right Content (Forms) -->
+        <div class="auth-content">
+            <div class="brand-logo"><i class="fas fa-tint me-2"></i>BloodLife</div>
+            
+            <div class="toggle-forms d-flex justify-content-center mb-4">
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-login-tab" data-bs-toggle="pill" data-bs-target="#pills-login" type="button" role="tab">Login</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-signup-tab" data-bs-toggle="pill" data-bs-target="#pills-signup" type="button" role="tab">Register</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-content" id="pills-tabContent">
+                <!-- Login Form -->
+                <div class="tab-pane fade show active" id="pills-login" role="tabpanel">
+                    <h3 class="text-center mb-4 fw-bold text-dark">Welcome Back</h3>
+                    <form action="/login" method="post">
+                        <div class="mb-3">
+                            <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label text-muted small" for="rememberMe">Remember me</label>
+                            </div>
+                            <a href="#" class="text-danger small fw-bold">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                    </form>
+                </div>
+
+                <!-- Signup Form -->
+                <div class="tab-pane fade" id="pills-signup" role="tabpanel">
+                    <h3 class="text-center mb-4 fw-bold text-dark">Create Account</h3>
+                    <form action="/signup" method="post">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="name" placeholder="Full Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" class="form-control" name="password" placeholder="Create Password" required>
+                        </div>
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" required id="terms">
+                            <label class="form-check-label text-muted small" for="terms">I agree to the Terms & Conditions</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-muted small">Need help? <a href="#" class="text-danger">Contact Support</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
